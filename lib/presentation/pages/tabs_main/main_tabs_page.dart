@@ -1,5 +1,6 @@
 import 'package:earth_force_assignment/core/permission_center/permissions_center.dart';
 import 'package:earth_force_assignment/di/locator_config.dart';
+import 'package:earth_force_assignment/presentation/pages/tabs/map/map_tab_page.dart';
 import 'package:earth_force_assignment/presentation/pages/tabs_main/bloc/home_page_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -25,8 +26,8 @@ class _HomePageState extends State<MainTabsPage> {
   int _selectedIndex = 0;
 
   // List of pages (widgets)
-  final List<Widget> _pages = const [
-    Center(child: Text("Map", style: TextStyle(fontSize: 24))),
+  final List<Widget> _pages =  [
+    MapTabPage.create(),
     Center(child: Text("Properties", style: TextStyle(fontSize: 24))),
     Center(child: Text("Settings", style: TextStyle(fontSize: 24))),
   ];

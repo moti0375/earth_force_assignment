@@ -54,6 +54,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   build_runner:
+  mobx_codegen: ^2.7.4
   freezed: ^3.2.3
   injectable_generator: null
 

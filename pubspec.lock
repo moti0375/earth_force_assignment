@@ -621,6 +621,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.5.0"
+  mobx_codegen:
+    dependency: "direct dev"
+    description:
+      name: mobx_codegen
+      sha256: "471b02d0cf7f64d1366944e9dc64353674807d31e48faba2201918cc1601876d"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.7.4"
   nested:
     dependency: transitive
     description:
