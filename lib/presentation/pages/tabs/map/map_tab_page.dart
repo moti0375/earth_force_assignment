@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:earth_force_assignment/core/data/model/location.dart';
 import 'package:earth_force_assignment/di/locator_config.dart';
 import 'package:earth_force_assignment/presentation/pages/tabs/map/map_tab_store.dart';
 import 'package:flutter/material.dart';
@@ -45,8 +46,8 @@ class _MapTabPageState extends State<MapTabPage> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    // mobxDispose ??= reaction((_) => widget.store.createOrEditAction,
-    //         (CreateOrEditAction? value) => _handleActionChange(value));
+    mobxDispose ??= reaction((_) => widget.store.location,
+            (Location? value) => value != null ? _moveMapToPosition(LatLng(value.latitude, value.longitude), currentZoom) : null);
   }
 
   @override
@@ -62,8 +63,8 @@ class _MapTabPageState extends State<MapTabPage> {
             myLocationButtonEnabled: true,
             myLocationEnabled: true,
             initialCameraPosition: CameraPosition(
-                target: widget.store.location ??= LatLng(0, 0),
-                zoom: 15),
+                target: const LatLng(0, 0),
+                zoom: currentZoom),
             onMapCreated: (GoogleMapController controller) {
               _controller.complete(controller);
               _googleMapController = controller;
@@ -89,7 +90,6 @@ class _MapTabPageState extends State<MapTabPage> {
     Position? locationData = await _getCurrentPosition();
     if (locationData != null) {
       widget.store.initializeMap(LatLng(locationData.latitude, locationData.longitude));
-      //widget.store.setLocationChanged(LatLng(locationData.latitude, locationData.longitude));
       _moveMapToPosition(
           LatLng(locationData.latitude, locationData.longitude), currentZoom);
     }
