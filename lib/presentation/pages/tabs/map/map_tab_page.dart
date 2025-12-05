@@ -52,21 +52,24 @@ class _MapTabPageState extends State<MapTabPage> {
   @override
   Widget build(BuildContext context) {
     return Observer(
-      builder: (_) => ClipRRect(
-        borderRadius: const BorderRadius.all(Radius.circular(16)),
-        child: GoogleMap(
-          onTap: _onMapClicked,
-          mapType: MapType.normal,
-          myLocationButtonEnabled: true,
-          myLocationEnabled: true,
-          initialCameraPosition: CameraPosition(
-              target: widget.store.location ??= LatLng(0, 0),
-              zoom: 15),
-          onMapCreated: (GoogleMapController controller) {
-            _controller.complete(controller);
-            _googleMapController = controller;
-          },
-          onCameraMove: _onCameraMoved,
+      builder: (_) => Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: ClipRRect(
+          borderRadius: const BorderRadius.all(Radius.circular(16)),
+          child: GoogleMap(
+            onTap: _onMapClicked,
+            mapType: MapType.normal,
+            myLocationButtonEnabled: true,
+            myLocationEnabled: true,
+            initialCameraPosition: CameraPosition(
+                target: widget.store.location ??= LatLng(0, 0),
+                zoom: 15),
+            onMapCreated: (GoogleMapController controller) {
+              _controller.complete(controller);
+              _googleMapController = controller;
+            },
+            onCameraMove: _onCameraMoved,
+          ),
         ),
       ),
     );
@@ -87,8 +90,8 @@ class _MapTabPageState extends State<MapTabPage> {
     if (locationData != null) {
       widget.store.initializeMap(LatLng(locationData.latitude, locationData.longitude));
       //widget.store.setLocationChanged(LatLng(locationData.latitude, locationData.longitude));
-      // _moveMapToPosition(
-      //     LatLng(locationData.latitude, locationData.longitude), currentZoom);
+      _moveMapToPosition(
+          LatLng(locationData.latitude, locationData.longitude), currentZoom);
     }
   }
 
@@ -102,4 +105,11 @@ class _MapTabPageState extends State<MapTabPage> {
     final position = await _geolocatorPlatform.getCurrentPosition();
     return position;
   }
+
+  void _moveMapToPosition(LatLng position, zoom) {
+    CameraPosition camPosition = CameraPosition(target: position, zoom: zoom);
+    _googleMapController
+        .moveCamera(CameraUpdate.newCameraPosition(camPosition));
+  }
+
 }
