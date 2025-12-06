@@ -6,6 +6,7 @@ import 'package:earth_force_assignment/core/network/sync_manager.dart';
 import 'package:earth_force_assignment/core/permission_center/permissions_center.dart';
 import 'package:earth_force_assignment/core/permission_center/permissions_center_impl.dart';
 import 'package:earth_force_assignment/presentation/repositories/poi_repository.dart';
+import 'package:earth_force_assignment/utils/toast_service.dart';
 import 'package:injectable/injectable.dart';
 
 import '../core/location/location_center.dart' show LocationManager, GeoLocationManager;
@@ -35,4 +36,7 @@ abstract class AppModule {
 
   @lazySingleton
   SyncManager bindSyncManager(JsonServerSync impl) => impl;
+
+  @lazySingleton
+  ToastService bindToastService(FlutterToastService impl) => impl;
 }

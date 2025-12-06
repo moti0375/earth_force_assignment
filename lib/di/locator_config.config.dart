@@ -27,6 +27,7 @@ import '../presentation/pages/tabs/device_properties/device_properties_notifier.
 import '../presentation/pages/tabs/map/map_tab_store.dart' as _i99;
 import '../presentation/pages/tabs_main/bloc/home_page_cubit.dart' as _i123;
 import '../presentation/repositories/poi_repository.dart' as _i851;
+import '../utils/toast_service.dart' as _i435;
 import 'app_module.dart' as _i460;
 
 extension GetItInjectableX on _i174.GetIt {
@@ -39,6 +40,7 @@ extension GetItInjectableX on _i174.GetIt {
     final appModule = _$AppModule();
     gh.factory<_i12.LocalServerService>(() => _i12.LocalServerService());
     gh.factory<_i139.AppDatabase>(() => _i139.AppDatabase());
+    gh.factory<_i435.FlutterToastService>(() => _i435.FlutterToastService());
     gh.lazySingleton<_i106.PermissionsCenter>(
       () => appModule.permissionsCenter(),
     );
@@ -59,6 +61,9 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i826.PlatformDeviceInfoDatasource(
         gh<_i1024.PlatformChannelAdapter>(),
       ),
+    );
+    gh.lazySingleton<_i435.ToastService>(
+      () => appModule.bindToastService(gh<_i435.FlutterToastService>()),
     );
     gh.lazySingleton<_i826.DeviceInfoDatasource>(
       () => appModule.bindDeviceInfoDatasource(
@@ -92,6 +97,7 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i10.OfflineManager(
         gh<_i851.PoiRepository>(),
         gh<_i51.SyncManager>(),
+        gh<_i435.ToastService>(),
       ),
     );
     gh.factory<_i99.MapTabStore>(

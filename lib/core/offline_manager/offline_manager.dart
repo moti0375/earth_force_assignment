@@ -1,11 +1,12 @@
 import 'package:earth_force_assignment/core/network/sync_manager.dart';
 import 'package:earth_force_assignment/core/network/sync_result/sync_result.dart';
 import 'package:earth_force_assignment/presentation/repositories/poi_repository.dart';
+import 'package:earth_force_assignment/utils/toast_service.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart' show Colors;
-import 'package:fluttertoast/fluttertoast.dart'
-    show Fluttertoast, Toast, ToastGravity;
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:injectable/injectable.dart';
+
+
 
 @injectable
 class OfflineManager extends ChangeNotifier {
@@ -15,8 +16,9 @@ class OfflineManager extends ChangeNotifier {
 
   final PoiRepository poiRepository;
   final SyncManager _syncManager;
+  final ToastService _toastService;
 
-  OfflineManager(this.poiRepository, this._syncManager);
+  OfflineManager(this.poiRepository, this._syncManager, this._toastService);
 
   void setOfflineMode(bool value) async {
     final wasOffline = _isOffline;
@@ -47,12 +49,8 @@ class OfflineManager extends ChangeNotifier {
   }
 
   void _showToast(String message) {
-    Fluttertoast.showToast(
-      msg: message,
-      toastLength: Toast.LENGTH_LONG,
-      gravity: ToastGravity.CENTER,
-      timeInSecForIosWeb: 1,
-      fontSize: 16.0,
+    _toastService.showToast(
+       message,
     );
   }
 }

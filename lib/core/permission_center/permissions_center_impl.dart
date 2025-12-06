@@ -4,11 +4,7 @@ import 'package:permission_handler/permission_handler.dart';
 class PermissionsCenterImpl implements PermissionsCenter{
   @override
   Future<bool> requestLocationPermissions() async {
-    print("_requestLocationPermissions: ");
-    bool isShown = await Permission.location.shouldShowRequestRationale;
-    print("location granted: isShown: $isShown");
     var locationGranted = await Permission.location.request().isGranted;
-    print("location granted: $locationGranted");
     return locationGranted;
   }
 
