@@ -5,6 +5,7 @@ import 'package:earth_force_assignment/presentation/pages/tabs/device_properties
 import 'package:earth_force_assignment/presentation/pages/tabs/map/map_tab_page.dart';
 import 'package:earth_force_assignment/presentation/pages/tabs/sync/sync_tab.dart';
 import 'package:earth_force_assignment/presentation/pages/tabs_main/bloc/home_page_state.dart';
+import 'package:earth_force_assignment/ui/reactive_online_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -29,7 +30,7 @@ class _HomePageState extends State<MainTabsPage> {
   int _selectedIndex = 0;
 
   // List of pages (widgets)
-  final List<Widget> _pages =  [
+  final List<Widget> _pages = [
     MapTabPage.create(),
     DevicePropertiesTab.create(),
     const SyncTab(),
@@ -38,20 +39,32 @@ class _HomePageState extends State<MainTabsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Earth Force Assignment")),
+      appBar: AppBar(title: const Text("Earth Force Assignment"),
+          actions: const [
+             Padding(
+              padding: EdgeInsets.only(right: 16),
+              child: OfflineStatusIcon(),
+            ),
+          ]),
       body: BlocConsumer<HomePageCubit, HomePageState>(
-          builder: (_, state) {
-            state.maybeWhen(orElse: (){}, initialState: (){
+        builder: (_, state) {
+          state.maybeWhen(
+            orElse: () {},
+            initialState: () {
               context.read<HomePageCubit>().checkLocationPermissions();
-            } );
-            return _pages[_selectedIndex];
-          },
-          listener: (context, state) {
-            state.maybeWhen(
-                orElse: () {}, noLocationPermissions: (){
-                _showLocationPermissionDialog(context);
-            });
-          }),
+            },
+          );
+          return _pages[_selectedIndex];
+        },
+        listener: (context, state) {
+          state.maybeWhen(
+            orElse: () {},
+            noLocationPermissions: () {
+              _showLocationPermissionDialog(context);
+            },
+          );
+        },
+      ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
         onTap: (index) {
@@ -60,14 +73,8 @@ class _HomePageState extends State<MainTabsPage> {
           });
         },
         items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.map),
-            label: "Map",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.list),
-            label: "Device Info",
-          ),
+          BottomNavigationBarItem(icon: Icon(Icons.map), label: "Map"),
+          BottomNavigationBarItem(icon: Icon(Icons.list), label: "Device Info"),
           BottomNavigationBarItem(
             icon: Icon(Icons.settings),
             label: "Settings",
@@ -77,34 +84,33 @@ class _HomePageState extends State<MainTabsPage> {
     );
   }
 
-
-    Future<void> _showLocationPermissionDialog(BuildContext context) async {
-      return showDialog(
-        context: context,
-        barrierDismissible: false, // forces user to choose
-        builder: (_) {
-          return AlertDialog(
-            title: const Text("Location Permission Required"),
-            content: const Text(
-              "This app needs access to your location in order to function properly.",
+  Future<void> _showLocationPermissionDialog(BuildContext context) async {
+    return showDialog(
+      context: context,
+      barrierDismissible: false, // forces user to choose
+      builder: (_) {
+        return AlertDialog(
+          title: const Text("Location Permission Required"),
+          content: const Text(
+            "This app needs access to your location in order to function properly.",
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close dialog
+              },
+              child: const Text("Cancel"),
             ),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop(); // Close dialog
-                },
-                child: const Text("Cancel"),
-              ),
-              TextButton(
-                onPressed: () async {
-                  Navigator.of(context).pop(); // Close dialog
-                 context.read<HomePageCubit>().requestLocationPermission();
-                },
-                child: const Text("Allow"),
-              ),
-            ],
-          );
-        },
-      );
+            TextButton(
+              onPressed: () async {
+                Navigator.of(context).pop(); // Close dialog
+                context.read<HomePageCubit>().requestLocationPermission();
+              },
+              child: const Text("Allow"),
+            ),
+          ],
+        );
+      },
+    );
   }
 }
