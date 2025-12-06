@@ -2,6 +2,7 @@ import 'package:earth_force_assignment/core/data/model/location.dart';
 import 'package:earth_force_assignment/core/data/model/poi.dart';
 import 'package:earth_force_assignment/core/location/location_center.dart';
 import 'package:earth_force_assignment/presentation/repositories/poi_repository.dart';
+import 'package:earth_force_assignment/ui/emoji_maker.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
@@ -17,13 +18,21 @@ abstract class MapTabStoreBase with Store {
   final LocationManager _locationManager;
   final PoiRepository _poiRepository;
 
+  late BitmapDescriptor treeMarker;
+
   MapTabStoreBase(this._locationManager, this._poiRepository) {
     print("MapTabStore: created");
+    setMarkerDescriptor();
     _locationManager.locationStream().listen((location) {
       print("MapTabStore: location: ${location.latitude}");
       this.location = location;
-      //setLocationChanged();
     });
+
+  }
+
+  @action
+  Future<void> setMarkerDescriptor() async {
+    treeMarker = await EmojiMarker.create("🌳", size: 80);
   }
 
   @observable
@@ -57,34 +66,22 @@ abstract class MapTabStoreBase with Store {
     _poiRepository.poisUpdates().listen((poi) {
       print("onPoiUpdate: $poi");
       this.poi = poi;
-      markers.add(
-        Marker(
-          markerId: MarkerId(poi.id.toString()),
-          position: LatLng(poi.latitude, poi.longitude),
-          icon: BitmapDescriptor.defaultMarkerWithHue(
-            BitmapDescriptor.hueGreen,
-          ),
-        ),
-      );
+      _updateMarkerList([poi]);
     });
+  }
+
+  void _updateMarkerList(List<Poi> pois) async {
+    List<Marker> markers = pois.map((poi) => Marker(
+      markerId: MarkerId(poi.id.toString()),
+      position: LatLng(poi.latitude, poi.longitude),
+      icon: treeMarker,)).toList();
+
+    this.markers.addAll(markers);
   }
 
   Future<void> _readAllPois() async {
     await _poiRepository.readAllPois().then((pois) {
-      List<Marker> markers = pois
-          .map(
-            (poi) => Marker(
-              markerId: MarkerId(poi.id.toString()),
-              position: LatLng(poi.latitude, poi.longitude),
-              icon: BitmapDescriptor.defaultMarkerWithHue(
-                BitmapDescriptor.hueGreen,
-              ),
-            ),
-          )
-          .toList();
-
-      print("readAllPois: there are ${markers.length} markers: $markers");
-      this.markers.addAll(markers);
+      _updateMarkerList(pois);
       _listenPoiUpdates();
     });
   }
