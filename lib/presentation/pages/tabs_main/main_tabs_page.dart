@@ -59,11 +59,11 @@ class _HomePageState extends State<MainTabsPage> {
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.map),
-            label: "Home",
+            label: "Map",
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.list),
-            label: "Stats",
+            label: "Device Info",
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.settings),
