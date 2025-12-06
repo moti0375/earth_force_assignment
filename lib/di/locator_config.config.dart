@@ -12,10 +12,13 @@
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 
+import '../core/data/datasources/poi_datasource.dart' as _i246;
 import '../core/location/location_center.dart' as _i190;
 import '../core/permission_center/permissions_center.dart' as _i106;
+import '../core/storage/database/app_database.dart' as _i139;
 import '../presentation/pages/tabs/map/map_tab_store.dart' as _i99;
 import '../presentation/pages/tabs_main/bloc/home_page_cubit.dart' as _i123;
+import '../presentation/repositories/poi_repository.dart' as _i851;
 import 'app_module.dart' as _i460;
 
 extension GetItInjectableX on _i174.GetIt {
@@ -26,6 +29,7 @@ extension GetItInjectableX on _i174.GetIt {
   }) {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
     final appModule = _$AppModule();
+    gh.factory<_i139.AppDatabase>(() => _i139.AppDatabase());
     gh.lazySingleton<_i106.PermissionsCenter>(
       () => appModule.permissionsCenter(),
     );
@@ -36,8 +40,23 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i190.LocationManager>(),
       ),
     );
+    gh.lazySingleton<_i246.PoiLocalDatasourceImpl>(
+      () => _i246.PoiLocalDatasourceImpl(gh<_i139.AppDatabase>()),
+    );
+    gh.lazySingleton<_i246.PoiLocalDatasource>(
+      () => appModule.bindPoiDatasource(gh<_i246.PoiLocalDatasourceImpl>()),
+    );
+    gh.lazySingleton<_i851.PoiRepositoryImpl>(
+      () => _i851.PoiRepositoryImpl(gh<_i246.PoiLocalDatasource>()),
+    );
+    gh.lazySingleton<_i851.PoiRepository>(
+      () => appModule.bindPoiRepository(gh<_i851.PoiRepositoryImpl>()),
+    );
     gh.factory<_i99.MapTabStore>(
-      () => _i99.MapTabStore(gh<_i190.LocationManager>()),
+      () => _i99.MapTabStore(
+        gh<_i190.LocationManager>(),
+        gh<_i851.PoiRepository>(),
+      ),
     );
     return this;
   }

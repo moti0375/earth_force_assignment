@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:earth_force_assignment/core/data/model/location.dart';
+import 'package:earth_force_assignment/core/data/model/poi.dart';
 import 'package:earth_force_assignment/di/locator_config.dart';
 import 'package:earth_force_assignment/presentation/pages/tabs/map/map_tab_store.dart';
 import 'package:flutter/material.dart';
@@ -75,6 +76,7 @@ class _MapTabPageState extends State<MapTabPage> {
               _controller.complete(controller);
               _googleMapController = controller;
             },
+            markers: widget.store.markers.toSet(),
             onCameraMove: _onCameraMoved,
           ),
         ),
@@ -83,7 +85,7 @@ class _MapTabPageState extends State<MapTabPage> {
   }
 
   void _onMapClicked(LatLng latLng) {
-    //widget.store.setLocationChanged(latLng);
+    widget.store.onMapClicked(latLng);
   }
 
   void _onCameraMoved(CameraPosition position) {
@@ -117,5 +119,4 @@ class _MapTabPageState extends State<MapTabPage> {
     _googleMapController
         .moveCamera(CameraUpdate.newCameraPosition(camPosition));
   }
-
 }
