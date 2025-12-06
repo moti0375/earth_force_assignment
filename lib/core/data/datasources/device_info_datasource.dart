@@ -3,6 +3,7 @@ import 'package:injectable/injectable.dart';
 
 abstract class DeviceInfoDatasource {
   Stream<Map<String, dynamic>> deviceProperties();
+  Future<Map<String, dynamic>> getDeviceDetails();
 }
 
 @injectable
@@ -16,5 +17,10 @@ class PlatformDeviceInfoDatasource implements DeviceInfoDatasource {
    return _channelAdapter.getEventChannel().map(
          (event) => Map<String, dynamic>.from(event),
    );
+  }
+
+  @override
+  Future<Map<String, dynamic>> getDeviceDetails() {
+    return _channelAdapter.invokeMethod("getDeviceDetails", {}).then((value) => Map<String, dynamic>.from(value));
   }
 }

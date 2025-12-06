@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.BatteryManager
+import android.os.Build
 import android.util.Log
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
@@ -38,9 +39,18 @@ class MainActivity: FlutterActivity(){
             PLATFORM_CHANNEL
         ).setMethodCallHandler { call, result ->
             when (call.method) {
+                "getDeviceDetails" -> getDeviceDetails(result)
                 else -> result.notImplemented()
             }
         }
+    }
+
+    private fun getDeviceDetails(result: MethodChannel.Result) {
+        val info = mapOf(
+            "manufacturer" to Build.MANUFACTURER,
+            "model" to Build.MODEL
+        )
+        result.success(info)
     }
 
 

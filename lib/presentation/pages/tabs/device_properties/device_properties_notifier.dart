@@ -19,6 +19,31 @@ class DeviceStatusNotifier with ChangeNotifier {
       print("deviceProperties: $data");
       notifyListeners();
     });
+
+    _getDeviceDetails();
+  }
+
+  Future<void> _getDeviceDetails() async {
+
+    _deviceInfoDatasource.getDeviceDetails().then((value) {
+      print("_getDeviceDetails: $value");
+      String deviceModel = value["model"] as String;
+      String deviceManufacturer = value["manufacturer"] as String;
+
+      properties = properties != null
+          ? properties?.copyWith(
+              model: deviceModel,
+              manufacturer: deviceManufacturer,
+            )
+          : DeviceProperties(
+              batteryLevel: 0,
+              isCharging: false,
+              model: deviceModel,
+              manufacturer: deviceManufacturer,
+            );
+
+      notifyListeners();
+    });
   }
 
   void _mapDataToDeviceState(Map<String, dynamic> data) {
@@ -36,15 +61,14 @@ class DeviceStatusNotifier with ChangeNotifier {
     int level = batteryStatus["batteryLevel"] as int;
     bool isCharging = batteryStatus["isCharging"] as bool;
 
-    properties = properties != null ? properties?.copyWith(
-      batteryLevel: level,
-      isCharging: isCharging,
-    ) : DeviceProperties(
-      batteryLevel: level,
-      isCharging: isCharging,
-      model: "",
-      manufacturer: "",
-    );
+    properties = properties != null
+        ? properties?.copyWith(batteryLevel: level, isCharging: isCharging)
+        : DeviceProperties(
+            batteryLevel: level,
+            isCharging: isCharging,
+            model: "",
+            manufacturer: "",
+          );
     notifyListeners();
   }
 }
