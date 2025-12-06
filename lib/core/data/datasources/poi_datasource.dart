@@ -27,15 +27,17 @@ class PoiLocalDatasourceImpl implements PoiLocalDatasource {
     return _poiDao
         .watchLatestPoi()
         .map((row) {
-          if (row == null) return null;
-          return Poi(
-            id: row.id,
-            latitude: row.latitude,
-            longitude: row.longitude,
-            createdAt: row.createdAt,
-            sent: row.sent,
-          );
-        })
+      if (row == null) return null;
+      return Poi(
+        id: row.id,
+        latitude: row.latitude,
+        longitude: row.longitude,
+        createdAt: row.createdAt,
+        sent: row.sent,
+        description: row.description,
+        imagePath: row.imagePath,
+      );
+    })
         .where((poi) => poi != null)
         .cast<Poi>();
   }
@@ -44,12 +46,13 @@ class PoiLocalDatasourceImpl implements PoiLocalDatasource {
   Future<void> addPoi(Poi poi) async {
     await _poiDao.insertPoi(
       PoiTableCompanion.insert(
-        latitude: poi.latitude,
-        longitude: poi.longitude,
-        createdAt: poi.createdAt,
-        sent: const Value<bool>(false),
-      ),
-    );
+          latitude: poi.latitude,
+          longitude: poi.longitude,
+          createdAt: poi.createdAt,
+          description: poi.description,
+          imagePath: Value(poi.imagePath),
+          sent: const Value<bool>(false),
+    ),);
   }
 
   @override
@@ -57,14 +60,17 @@ class PoiLocalDatasourceImpl implements PoiLocalDatasource {
     List<PoiTableData> pois = await _poiDao.readAllPois();
     return pois
         .map(
-          (poiData) => Poi(
+          (poiData) =>
+          Poi(
             id: poiData.id,
             latitude: poiData.latitude,
             longitude: poiData.longitude,
             createdAt: poiData.createdAt,
             sent: poiData.sent,
+            description: poiData.description,
+            imagePath: poiData.imagePath
           ),
-        )
+    )
         .toList();
   }
 
@@ -73,13 +79,16 @@ class PoiLocalDatasourceImpl implements PoiLocalDatasource {
     List<PoiTableData> pois = await _poiDao.readUnsyncedPois();
     return pois
         .map(
-          (poiData) => Poi(
-        id: poiData.id,
-        latitude: poiData.latitude,
-        longitude: poiData.longitude,
-        createdAt: poiData.createdAt,
-        sent: poiData.sent,
-      ),
+          (poiData) =>
+          Poi(
+              id: poiData.id,
+              latitude: poiData.latitude,
+              longitude: poiData.longitude,
+              createdAt: poiData.createdAt,
+              sent: poiData.sent,
+              description: poiData.description,
+              imagePath: poiData.imagePath
+          ),
     ).toList();
   }
 

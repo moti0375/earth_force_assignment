@@ -10,7 +10,9 @@ abstract class Poi with _$Poi {
     required double latitude,
     required double longitude,
     required DateTime createdAt,
-    required bool sent
+    required bool sent,
+    required String description,
+    String? imagePath,
   }) = _Poi;
 
   factory Poi.fromJson(Map<String, dynamic> json) => _$PoiFromJson(json);

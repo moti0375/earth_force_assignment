@@ -51,13 +51,14 @@ abstract class MapTabStoreBase with Store {
   }
 
   @action
-  Future<void> onMapClicked(LatLng position) async {
+  Future<void> onMapClicked(LatLng position, String description) async {
     print("onMapClicked: $position");
     Poi poi = Poi(
       latitude: position.latitude,
       longitude: position.longitude,
       createdAt: DateTime.now(),
       sent: false,
+      description: description,
     );
     await _poiRepository.addPoi(poi);
   }
