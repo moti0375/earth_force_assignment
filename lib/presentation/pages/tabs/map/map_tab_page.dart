@@ -32,24 +32,14 @@ class MapTabPage extends StatefulWidget {
 }
 
 class _MapTabPageState extends State<MapTabPage> {
-
-  final GeolocatorPlatform _geolocatorPlatform = GeolocatorPlatform.instance;
-  Completer<GoogleMapController> _controller = Completer();
+  final Completer<GoogleMapController> _controller = Completer();
   late GoogleMapController _googleMapController;
   ReactionDisposer? mobxDispose;
   double currentZoom = 15;
-
-  @override
-  void initState() {
-    super.initState();
-    _initializeMap();
-  }
-
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    mobxDispose ??= reaction((_) => widget.store.location,
-            (Location? value) => value != null ? _moveMapToPosition(LatLng(value.latitude, value.longitude), currentZoom) : null);
+    mobxDispose ??= reaction((_) => widget.store.location, (Location? value) => value != null ? _moveMapToPosition(LatLng(value.latitude, value.longitude), currentZoom) : null);
   }
 
   @override
@@ -100,20 +90,6 @@ class _MapTabPageState extends State<MapTabPage> {
     setState(() {
       currentZoom = position.zoom;
     });
-  }
-
-  void _initializeMap() async {
-    Position? locationData = await _getCurrentPosition();
-    if (locationData != null) {
-      widget.store.initializeMap(LatLng(locationData.latitude, locationData.longitude));
-      _moveMapToPosition(
-          LatLng(locationData.latitude, locationData.longitude), currentZoom);
-    }
-  }
-
-  Future<Position?> _getCurrentPosition() async {
-    final position = await _geolocatorPlatform.getCurrentPosition();
-    return position;
   }
 
   void _moveMapToPosition(LatLng position, zoom) {
@@ -184,5 +160,4 @@ class _MapTabPageState extends State<MapTabPage> {
       },
     );
   }
-
 }

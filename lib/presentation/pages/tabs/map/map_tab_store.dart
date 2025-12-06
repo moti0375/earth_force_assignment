@@ -24,11 +24,8 @@ abstract class MapTabStoreBase with Store {
   MapTabStoreBase(this._locationManager, this._poiRepository) {
     print("MapTabStore: created");
     setMarkerDescriptor();
-    _locationManager.locationStream().listen((location) {
-      print("MapTabStore: location: ${location.latitude}");
-      this.location = location;
-    });
-
+    _listenToLocationUpdates();
+    _readAllPois();
   }
 
   @action
@@ -46,12 +43,6 @@ abstract class MapTabStoreBase with Store {
   ObservableList<Marker> markers = ObservableList<Marker>();
 
   @action
-  Future<void> initializeMap(LatLng initializeLocation) async {
-    location = await _locationManager.getLastKnownLocation();
-    _readAllPois();
-  }
-
-  @action
   Future<void> onMapClicked(PoiInput poiInput) async {
     print("onMapClicked: $poiInput");
     Poi poi = Poi(
@@ -60,9 +51,16 @@ abstract class MapTabStoreBase with Store {
       createdAt: DateTime.now(),
       sent: false,
       description: poiInput.description,
-      imagePath: poiInput.imagePath
+      imagePath: poiInput.imagePath,
     );
     await _poiRepository.addPoi(poi);
+  }
+
+  void _listenToLocationUpdates() {
+    _locationManager.locationStream().listen((location) {
+      print("MapTabStore: location: ${location.latitude}");
+      this.location = location;
+    });
   }
 
   void _listenPoiUpdates() {
@@ -74,22 +72,36 @@ abstract class MapTabStoreBase with Store {
   }
 
   void _updateMarkerList(List<Poi> pois) async {
-    List<Marker> markers = pois.map((poi) => Marker(
-      markerId: MarkerId(poi.id.toString()),
-      position: LatLng(poi.latitude, poi.longitude),
-      infoWindow: InfoWindow(
-        title: poi.description,
-        snippet: poi.imagePath != null ? "Image attached" : null,
-      ),
-      icon: treeMarker,)).toList();
+    List<Marker> markers = pois
+        .map(
+          (poi) => Marker(
+            markerId: MarkerId(poi.id.toString()),
+            position: LatLng(poi.latitude, poi.longitude),
+            infoWindow: InfoWindow(
+              title: poi.description,
+              snippet: poi.imagePath != null ? "Image attached" : null,
+            ),
+            icon: treeMarker,
+          ),
+        )
+        .toList();
 
     this.markers.addAll(markers);
   }
 
   Future<void> _readAllPois() async {
-    await _poiRepository.readAllPois().then((pois) {
-      _updateMarkerList(pois);
-      _listenPoiUpdates();
-    });
+    print("_readAllPois: ");
+    await _poiRepository
+        .readAllPois()
+        .then((pois) {
+          print("readAllPois: $pois");
+          _updateMarkerList(pois);
+          _listenPoiUpdates();
+        })
+        .onError((error, stackTrace) {
+          print("readAllPois: error: $error");
+        });
   }
+
+
 }
