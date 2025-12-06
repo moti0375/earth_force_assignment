@@ -3,6 +3,7 @@ import 'package:earth_force_assignment/core/permission_center/permissions_center
 import 'package:earth_force_assignment/di/locator_config.dart';
 import 'package:earth_force_assignment/presentation/pages/tabs/device_properties/device_properties.dart';
 import 'package:earth_force_assignment/presentation/pages/tabs/map/map_tab_page.dart';
+import 'package:earth_force_assignment/presentation/pages/tabs/sync/sync_tab.dart';
 import 'package:earth_force_assignment/presentation/pages/tabs_main/bloc/home_page_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -31,7 +32,7 @@ class _HomePageState extends State<MainTabsPage> {
   final List<Widget> _pages =  [
     MapTabPage.create(),
     DevicePropertiesTab.create(),
-    const Center(child: Text("Settings", style: TextStyle(fontSize: 24))),
+    const SyncTab(),
   ];
 
   @override

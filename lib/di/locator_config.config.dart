@@ -16,6 +16,7 @@ import '../core/channels/platform_channel_adapter.dart' as _i1024;
 import '../core/data/datasources/device_info_datasource.dart' as _i826;
 import '../core/data/datasources/poi_datasource.dart' as _i246;
 import '../core/location/location_center.dart' as _i190;
+import '../core/offline_manager/offline_manager.dart' as _i10;
 import '../core/permission_center/permissions_center.dart' as _i106;
 import '../core/storage/database/app_database.dart' as _i139;
 import '../core/storage/database/daos/poi_dao.dart' as _i436;
@@ -74,6 +75,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i851.PoiRepository>(
       () => appModule.bindPoiRepository(gh<_i851.PoiRepositoryImpl>()),
+    );
+    gh.factory<_i10.OfflineManager>(
+      () => _i10.OfflineManager(gh<_i851.PoiRepository>()),
     );
     gh.factory<_i99.MapTabStore>(
       () => _i99.MapTabStore(
