@@ -51,6 +51,12 @@ class _MapTabPageState extends State<MapTabPage> {
   }
 
   @override
+  void dispose() {
+    mobxDispose?.call();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Observer(
       builder: (_) => Padding(
