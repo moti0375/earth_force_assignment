@@ -16,6 +16,7 @@ import '../core/data/datasources/poi_datasource.dart' as _i246;
 import '../core/location/location_center.dart' as _i190;
 import '../core/permission_center/permissions_center.dart' as _i106;
 import '../core/storage/database/app_database.dart' as _i139;
+import '../core/storage/database/daos/poi_dao.dart' as _i436;
 import '../presentation/pages/tabs/map/map_tab_store.dart' as _i99;
 import '../presentation/pages/tabs_main/bloc/home_page_cubit.dart' as _i123;
 import '../presentation/repositories/poi_repository.dart' as _i851;
@@ -40,8 +41,9 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i190.LocationManager>(),
       ),
     );
+    gh.factory<_i436.PoiDao>(() => _i436.PoiDao(gh<_i139.AppDatabase>()));
     gh.lazySingleton<_i246.PoiLocalDatasourceImpl>(
-      () => _i246.PoiLocalDatasourceImpl(gh<_i139.AppDatabase>()),
+      () => _i246.PoiLocalDatasourceImpl(gh<_i436.PoiDao>()),
     );
     gh.lazySingleton<_i246.PoiLocalDatasource>(
       () => appModule.bindPoiDatasource(gh<_i246.PoiLocalDatasourceImpl>()),

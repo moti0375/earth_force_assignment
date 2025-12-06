@@ -5,6 +5,7 @@ import 'package:injectable/injectable.dart';
 abstract class PoiRepository {
     Stream<Poi> poisUpdates();
     Future<void> addPoi(Poi poi);
+    Future<List<Poi>> readAllPois();
 }
 
 @lazySingleton
@@ -22,6 +23,9 @@ class PoiRepositoryImpl implements PoiRepository {
     return _poiLocalDatasource.addPoi(poi);
   }
 
-
+  @override
+  Future<List<Poi>> readAllPois() {
+    return _poiLocalDatasource.readAllPois();
+  }
 
 }

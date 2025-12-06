@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
+import 'package:earth_force_assignment/core/storage/database/daos/poi_dao.dart';
 import 'package:injectable/injectable.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
@@ -10,7 +11,7 @@ import 'poi_table.dart';
 part 'app_database.g.dart';
 
 @injectable
-@DriftDatabase(tables: [PoiTable])
+@DriftDatabase(tables: [PoiTable], daos: [PoiDao])
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
