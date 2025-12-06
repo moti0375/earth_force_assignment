@@ -61,7 +61,7 @@ class _MapTabPageState extends State<MapTabPage> {
             myLocationButtonEnabled: true,
             myLocationEnabled: true,
             initialCameraPosition: CameraPosition(
-                target: const LatLng(0, 0),
+                target: const LatLng(31.77, 35.22),
                 zoom: currentZoom),
             onMapCreated: (GoogleMapController controller) {
               _controller.complete(controller);
