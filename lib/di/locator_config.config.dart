@@ -12,11 +12,15 @@
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 
+import '../core/channels/platform_channel_adapter.dart' as _i1024;
+import '../core/data/datasources/device_info_datasource.dart' as _i826;
 import '../core/data/datasources/poi_datasource.dart' as _i246;
 import '../core/location/location_center.dart' as _i190;
 import '../core/permission_center/permissions_center.dart' as _i106;
 import '../core/storage/database/app_database.dart' as _i139;
 import '../core/storage/database/daos/poi_dao.dart' as _i436;
+import '../presentation/pages/tabs/device_properties/device_properties_notifier.dart'
+    as _i898;
 import '../presentation/pages/tabs/map/map_tab_store.dart' as _i99;
 import '../presentation/pages/tabs_main/bloc/home_page_cubit.dart' as _i123;
 import '../presentation/repositories/poi_repository.dart' as _i851;
@@ -35,13 +39,30 @@ extension GetItInjectableX on _i174.GetIt {
       () => appModule.permissionsCenter(),
     );
     gh.lazySingleton<_i190.LocationManager>(() => appModule.locationCenter());
+    gh.lazySingleton<_i1024.PlatformChannelAdapter>(
+      () => appModule.bindPlatformChannelAdapter(),
+    );
     gh.factory<_i123.HomePageCubit>(
       () => _i123.HomePageCubit(
         gh<_i106.PermissionsCenter>(),
         gh<_i190.LocationManager>(),
       ),
     );
+    gh.factory<_i826.PlatformDeviceInfoDatasource>(
+      () => _i826.PlatformDeviceInfoDatasource(
+        gh<_i1024.PlatformChannelAdapter>(),
+      ),
+    );
+    gh.lazySingleton<_i826.DeviceInfoDatasource>(
+      () => appModule.bindDeviceInfoDatasource(
+        gh<_i826.PlatformDeviceInfoDatasource>(),
+      ),
+    );
     gh.factory<_i436.PoiDao>(() => _i436.PoiDao(gh<_i139.AppDatabase>()));
+    gh.factory<_i898.DeviceStatusNotifier>(
+      () =>
+          _i898.DeviceStatusNotifier(gh<_i826.PlatformDeviceInfoDatasource>()),
+    );
     gh.lazySingleton<_i246.PoiLocalDatasourceImpl>(
       () => _i246.PoiLocalDatasourceImpl(gh<_i436.PoiDao>()),
     );

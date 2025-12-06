@@ -1,5 +1,7 @@
+import 'package:earth_force_assignment/core/data/datasources/device_info_datasource.dart';
 import 'package:earth_force_assignment/core/permission_center/permissions_center.dart';
 import 'package:earth_force_assignment/di/locator_config.dart';
+import 'package:earth_force_assignment/presentation/pages/tabs/device_properties/device_properties.dart';
 import 'package:earth_force_assignment/presentation/pages/tabs/map/map_tab_page.dart';
 import 'package:earth_force_assignment/presentation/pages/tabs_main/bloc/home_page_state.dart';
 import 'package:flutter/material.dart';
@@ -28,8 +30,8 @@ class _HomePageState extends State<MainTabsPage> {
   // List of pages (widgets)
   final List<Widget> _pages =  [
     MapTabPage.create(),
-    Center(child: Text("Properties", style: TextStyle(fontSize: 24))),
-    Center(child: Text("Settings", style: TextStyle(fontSize: 24))),
+    DevicePropertiesTab.create(),
+    const Center(child: Text("Settings", style: TextStyle(fontSize: 24))),
   ];
 
   @override

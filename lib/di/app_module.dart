@@ -1,3 +1,5 @@
+import 'package:earth_force_assignment/core/channels/platform_channel_adapter.dart';
+import 'package:earth_force_assignment/core/data/datasources/device_info_datasource.dart';
 import 'package:earth_force_assignment/core/data/datasources/poi_datasource.dart';
 import 'package:earth_force_assignment/core/permission_center/permissions_center.dart';
 import 'package:earth_force_assignment/core/permission_center/permissions_center_impl.dart';
@@ -19,5 +21,11 @@ abstract class AppModule {
 
   @lazySingleton
   PoiLocalDatasource bindPoiDatasource(PoiLocalDatasourceImpl impl) => impl;
+
+  @lazySingleton
+  PlatformChannelAdapter bindPlatformChannelAdapter() => ChannelAdapterImpl();
+
+  @lazySingleton
+  DeviceInfoDatasource bindDeviceInfoDatasource(PlatformDeviceInfoDatasource impl) => impl;
 
 }
