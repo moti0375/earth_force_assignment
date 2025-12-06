@@ -1,11 +1,12 @@
 import 'dart:async';
 
 import 'package:earth_force_assignment/core/data/model/location.dart';
-import 'package:earth_force_assignment/core/data/model/poi.dart';
 import 'package:earth_force_assignment/di/locator_config.dart';
 import 'package:earth_force_assignment/presentation/pages/tabs/map/map_tab_store.dart';
+import 'package:earth_force_assignment/presentation/pages/tabs/map/poi_input.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -84,8 +85,15 @@ class _MapTabPageState extends State<MapTabPage> {
     );
   }
 
-  void _onMapClicked(LatLng latLng) {
-    widget.store.onMapClicked(latLng);
+  void _onMapClicked(LatLng latLng) async {
+    await _showPoiInputDialog(context, latLng).then((poiInput) {
+      if(poiInput != null){
+        print("_onMapClicked: poiInput is $poiInput");
+        widget.store.onMapClicked(poiInput);
+      } else {
+        print("_onMapClicked: poiInput is null");
+      }
+    });
   }
 
   void _onCameraMoved(CameraPosition position) {
@@ -104,12 +112,6 @@ class _MapTabPageState extends State<MapTabPage> {
   }
 
   Future<Position?> _getCurrentPosition() async {
-    // final hasPermission = await _handlePermission();
-    //
-    // if (!hasPermission) {
-    //   return null;
-    // }
-
     final position = await _geolocatorPlatform.getCurrentPosition();
     return position;
   }
@@ -119,4 +121,68 @@ class _MapTabPageState extends State<MapTabPage> {
     _googleMapController
         .moveCamera(CameraUpdate.newCameraPosition(camPosition));
   }
+
+  Future<PoiInput?> _showPoiInputDialog(BuildContext context, LatLng latLng) async {
+    final textController = TextEditingController();
+    final picker = ImagePicker();
+    String? pickedImage;
+
+    return showDialog<PoiInput>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text("Add POI"),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: textController,
+                decoration: const InputDecoration(
+                  labelText: "Description",
+                ),
+              ),
+              const SizedBox(height: 16),
+              Row(
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.image),
+                    onPressed: () async {
+                      final file = await picker.pickImage(
+                        source: ImageSource.camera,
+                      );
+                      if (file != null) {
+                        pickedImage = file.path;
+                      }
+                    },
+                  ),
+                  const Text("Attach Image"),
+                ],
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(null),
+              child: const Text("Cancel"),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                final desc = textController.text.trim();
+                if (desc.isEmpty) return;
+                Navigator.of(context).pop(
+                  PoiInput(
+                    position: latLng,
+                    description: desc,
+                    imagePath: pickedImage,
+                  ),
+                );
+              },
+              child: const Text("Save"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
 }

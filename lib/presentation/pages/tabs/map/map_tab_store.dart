@@ -1,6 +1,7 @@
 import 'package:earth_force_assignment/core/data/model/location.dart';
 import 'package:earth_force_assignment/core/data/model/poi.dart';
 import 'package:earth_force_assignment/core/location/location_center.dart';
+import 'package:earth_force_assignment/presentation/pages/tabs/map/poi_input.dart';
 import 'package:earth_force_assignment/presentation/repositories/poi_repository.dart';
 import 'package:earth_force_assignment/ui/emoji_maker.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -51,14 +52,15 @@ abstract class MapTabStoreBase with Store {
   }
 
   @action
-  Future<void> onMapClicked(LatLng position, String description) async {
-    print("onMapClicked: $position");
+  Future<void> onMapClicked(PoiInput poiInput) async {
+    print("onMapClicked: $poiInput");
     Poi poi = Poi(
-      latitude: position.latitude,
-      longitude: position.longitude,
+      latitude: poiInput.position.latitude,
+      longitude: poiInput.position.longitude,
       createdAt: DateTime.now(),
       sent: false,
-      description: description,
+      description: poiInput.description,
+      imagePath: poiInput.imagePath
     );
     await _poiRepository.addPoi(poi);
   }
@@ -75,6 +77,10 @@ abstract class MapTabStoreBase with Store {
     List<Marker> markers = pois.map((poi) => Marker(
       markerId: MarkerId(poi.id.toString()),
       position: LatLng(poi.latitude, poi.longitude),
+      infoWindow: InfoWindow(
+        title: poi.description,
+        snippet: poi.imagePath != null ? "Image attached" : null,
+      ),
       icon: treeMarker,)).toList();
 
     this.markers.addAll(markers);
