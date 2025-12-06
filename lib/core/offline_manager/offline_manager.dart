@@ -20,14 +20,14 @@ class OfflineManager extends ChangeNotifier {
 
   OfflineManager(this.poiRepository, this._syncManager, this._toastService);
 
-  void setOfflineMode(bool value) async {
+  Future<void> setOfflineMode(bool value) async {
     final wasOffline = _isOffline;
     _isOffline = value;
     notifyListeners();
 
     if (wasOffline && !_isOffline) {
       SyncResult result = await _syncManager.sendPendingPois();
-
+      print("result: $result");
       result.when(
         noOp: () {
           _showToast("Nothing to sync");
@@ -49,8 +49,9 @@ class OfflineManager extends ChangeNotifier {
   }
 
   void _showToast(String message) {
+    print("_showToast: $message");
     _toastService.showToast(
-       message,
+       message
     );
   }
 }
