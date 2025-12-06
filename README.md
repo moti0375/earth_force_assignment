@@ -32,23 +32,23 @@ Follow these steps to get the project up and running on your local machine.
 - For Google Maps, you will need an API key. Follow the instructions to get an API key and configure it for [Android](https://pub.dev/packages/google_maps_flutter#android) and [iOS](https://pub.dev/packages/google_maps_flutter#ios).
 
 ### 2. Clone the Repository
-git clone <YOUR_REPOSITORY_URL> cd earth_force_assignment
+`git clone <YOUR_REPOSITORY_URL> cd earth_force_assignment`
 
 
 ### 3. Install Dependencies
 Run the following command in your terminal to fetch all the required packages.
-flutter pub get
+`flutter pub get`
 
 
 ### 4. Run Code Generation
 This project relies heavily on code generation. Run the following command to generate all necessary files.
-sh flutter pub run build_runner build --delete-conflicting-outputs
+`flutter pub run build_runner build --delete-conflicting-outputs`
 
 
 **Note**: If you modify any files that use `injectable`, `freezed`, `mobx`, or `drift`, you will need to run this command again. For continuous generation during development, use the `watch` command:
-flutter pub run build_runner watch --delete-conflicting-outputs
+`flutter pub run build_runner watch --delete-conflicting-outputs`
 
 
 ### 5. Run the Application
 Finally, launch the app on your emulator or physical device.
-flutter run
+`flutter run`
