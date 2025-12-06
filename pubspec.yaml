@@ -54,6 +54,10 @@ dependencies:
   drift_flutter: ^0.2.8
   sqlite3_flutter_libs: ^0.5.41
   path: ^1.9.0
+  shelf: ^1.4.0
+  shelf_router: ^1.1.4
+  shelf_static: ^1.1.0
+  http: ^1.6.0
 
 dev_dependencies:
   flutter_test:

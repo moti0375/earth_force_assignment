@@ -3,6 +3,7 @@ import 'package:earth_force_assignment/core/storage/database/app_database.dart';
 import 'package:drift/drift.dart';
 import 'package:earth_force_assignment/core/storage/database/poi_table.dart';
 import 'package:injectable/injectable.dart';
+
 part 'poi_dao.g.dart';
 
 @injectable
@@ -11,12 +12,10 @@ class PoiDao extends DatabaseAccessor<AppDatabase> with _$PoiDaoMixin {
   PoiDao(super.db);
 
   // Insert a POI
-  Future<int> insertPoi(PoiTableCompanion poi) =>
-      into(poiTable).insert(poi);
+  Future<int> insertPoi(PoiTableCompanion poi) => into(poiTable).insert(poi);
 
   // Watch entire POI list (if needed)
-  Stream<List<PoiTableData>> watchAllPois() =>
-      select(poiTable).watch();
+  Stream<List<PoiTableData>> watchAllPois() => select(poiTable).watch();
 
   // Watch ONLY the most recently added POI
   Stream<PoiTableData?> watchLatestPoi() {
@@ -27,4 +26,13 @@ class PoiDao extends DatabaseAccessor<AppDatabase> with _$PoiDaoMixin {
   }
 
   Future<List<PoiTableData>> readAllPois() => select(poiTable).get();
+
+  Future<List<PoiTableData>> readUnsyncedPois() =>
+      (select(poiTable)..where((t) => t.sent.equals(false))).get();
+
+  Future<int> markSyncedPois(List<int> ids) {
+    return (update(poiTable)..where((t) => t.id.isIn(ids))).write(
+      const PoiTableCompanion(sent: Value(true)),
+    );
+  }
 }

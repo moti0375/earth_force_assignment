@@ -16,6 +16,8 @@ import '../core/channels/platform_channel_adapter.dart' as _i1024;
 import '../core/data/datasources/device_info_datasource.dart' as _i826;
 import '../core/data/datasources/poi_datasource.dart' as _i246;
 import '../core/location/location_center.dart' as _i190;
+import '../core/network/local_server_service.dart' as _i12;
+import '../core/network/sync_manager.dart' as _i51;
 import '../core/offline_manager/offline_manager.dart' as _i10;
 import '../core/permission_center/permissions_center.dart' as _i106;
 import '../core/storage/database/app_database.dart' as _i139;
@@ -35,6 +37,7 @@ extension GetItInjectableX on _i174.GetIt {
   }) {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
     final appModule = _$AppModule();
+    gh.factory<_i12.LocalServerService>(() => _i12.LocalServerService());
     gh.factory<_i139.AppDatabase>(() => _i139.AppDatabase());
     gh.lazySingleton<_i106.PermissionsCenter>(
       () => appModule.permissionsCenter(),
@@ -42,6 +45,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i190.LocationManager>(() => appModule.locationCenter());
     gh.lazySingleton<_i1024.PlatformChannelAdapter>(
       () => appModule.bindPlatformChannelAdapter(),
+    );
+    gh.lazySingleton<_i12.ServerService>(
+      () => appModule.bindServerService(gh<_i12.LocalServerService>()),
     );
     gh.factory<_i123.HomePageCubit>(
       () => _i123.HomePageCubit(
@@ -70,6 +76,12 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i246.PoiLocalDatasource>(
       () => appModule.bindPoiDatasource(gh<_i246.PoiLocalDatasourceImpl>()),
     );
+    gh.factory<_i51.JsonServerSync>(
+      () => _i51.JsonServerSync(gh<_i246.PoiLocalDatasource>()),
+    );
+    gh.lazySingleton<_i51.SyncManager>(
+      () => appModule.bindSyncManager(gh<_i51.JsonServerSync>()),
+    );
     gh.lazySingleton<_i851.PoiRepositoryImpl>(
       () => _i851.PoiRepositoryImpl(gh<_i246.PoiLocalDatasource>()),
     );
@@ -77,7 +89,10 @@ extension GetItInjectableX on _i174.GetIt {
       () => appModule.bindPoiRepository(gh<_i851.PoiRepositoryImpl>()),
     );
     gh.factory<_i10.OfflineManager>(
-      () => _i10.OfflineManager(gh<_i851.PoiRepository>()),
+      () => _i10.OfflineManager(
+        gh<_i851.PoiRepository>(),
+        gh<_i51.SyncManager>(),
+      ),
     );
     gh.factory<_i99.MapTabStore>(
       () => _i99.MapTabStore(

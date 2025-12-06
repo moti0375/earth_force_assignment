@@ -1,3 +1,4 @@
+import 'package:drift/drift.dart';
 import 'package:earth_force_assignment/core/data/model/poi.dart';
 import 'package:earth_force_assignment/core/storage/database/app_database.dart';
 import 'package:earth_force_assignment/core/storage/database/daos/poi_dao.dart';
@@ -9,6 +10,10 @@ abstract class PoiLocalDatasource {
   Future<void> addPoi(Poi poi);
 
   Future<List<Poi>> readAllPois();
+
+  Future<List<Poi>> readUnsyncedPois();
+
+  Future<int> updateSyncedPois(List<int> pois);
 }
 
 @lazySingleton
@@ -42,7 +47,7 @@ class PoiLocalDatasourceImpl implements PoiLocalDatasource {
         latitude: poi.latitude,
         longitude: poi.longitude,
         createdAt: poi.createdAt,
-        sent: false,
+        sent: const Value<bool>(false),
       ),
     );
   }
@@ -61,5 +66,25 @@ class PoiLocalDatasourceImpl implements PoiLocalDatasource {
           ),
         )
         .toList();
+  }
+
+  @override
+  Future<List<Poi>> readUnsyncedPois() async {
+    List<PoiTableData> pois = await _poiDao.readUnsyncedPois();
+    return pois
+        .map(
+          (poiData) => Poi(
+        id: poiData.id,
+        latitude: poiData.latitude,
+        longitude: poiData.longitude,
+        createdAt: poiData.createdAt,
+        sent: poiData.sent,
+      ),
+    ).toList();
+  }
+
+  @override
+  Future<int> updateSyncedPois(List<int> pois) async {
+    return await _poiDao.markSyncedPois(pois);
   }
 }

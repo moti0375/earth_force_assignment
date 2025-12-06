@@ -1,6 +1,8 @@
 import 'package:earth_force_assignment/core/channels/platform_channel_adapter.dart';
 import 'package:earth_force_assignment/core/data/datasources/device_info_datasource.dart';
 import 'package:earth_force_assignment/core/data/datasources/poi_datasource.dart';
+import 'package:earth_force_assignment/core/network/local_server_service.dart';
+import 'package:earth_force_assignment/core/network/sync_manager.dart';
 import 'package:earth_force_assignment/core/permission_center/permissions_center.dart';
 import 'package:earth_force_assignment/core/permission_center/permissions_center_impl.dart';
 import 'package:earth_force_assignment/presentation/repositories/poi_repository.dart';
@@ -28,4 +30,9 @@ abstract class AppModule {
   @lazySingleton
   DeviceInfoDatasource bindDeviceInfoDatasource(PlatformDeviceInfoDatasource impl) => impl;
 
+  @lazySingleton
+  ServerService bindServerService(LocalServerService impl) => impl;
+
+  @lazySingleton
+  SyncManager bindSyncManager(JsonServerSync impl) => impl;
 }
