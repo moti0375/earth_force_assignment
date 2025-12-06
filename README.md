@@ -37,6 +37,7 @@ Follow these steps to get the project up and running on your local machine.
 
 ### 3. Install Dependencies
 Run the following command in your terminal to fetch all the required packages.
+
 `flutter pub get`
 
 
@@ -46,9 +47,11 @@ This project relies heavily on code generation. Run the following command to gen
 
 
 **Note**: If you modify any files that use `injectable`, `freezed`, `mobx`, or `drift`, you will need to run this command again. For continuous generation during development, use the `watch` command:
+
 `flutter pub run build_runner watch --delete-conflicting-outputs`
 
 
 ### 5. Run the Application
 Finally, launch the app on your emulator or physical device.
+
 `flutter run`
