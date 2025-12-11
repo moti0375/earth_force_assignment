@@ -21,9 +21,14 @@ abstract class MapTabStoreBase with Store {
 
   late BitmapDescriptor treeMarker;
 
-  MapTabStoreBase(this._locationManager, this._poiRepository) {
+  MapTabStoreBase(this._locationManager, this._poiRepository)  {
     print("MapTabStore: created");
-    setMarkerDescriptor();
+    _init();
+
+  }
+
+  _init() async {
+    await setMarkerDescriptor();
     _listenToLocationUpdates();
     _readAllPois();
   }
